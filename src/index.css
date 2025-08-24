@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Ensure colors, borders and shadows stay intact in PDF */
+
+
+
+.bg-primary {
+  background-color: #1d4ed8; /* instead of oklch(...) */
+}
