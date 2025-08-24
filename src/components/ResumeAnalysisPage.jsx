@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { FiUpload, FiBarChart2, FiCheck, FiX, FiEdit2, FiDownload, FiChevronRight } from "react-icons/fi";
 import { motion } from "framer-motion";
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 
@@ -92,7 +93,7 @@ const analyzeResume = async () => {
     const formData = new FormData();
     formData.append('resume', file);
     
-    const response = await axios.post('http://localhost:5000/api/resume/feedback', formData);
+    const response = await axios.post(`${API_BASE_URL}/api/resume/feedback`, formData);
 
     // Ensure response has required fields
     if (!response.data?.data) {
@@ -413,7 +414,7 @@ const downloadReport = async () => {
     `;
 
     // Send to backend
-    const response = await fetch('http://localhost:5000/api/generate-pdf', {
+    const response = await fetch(`${API_BASE_URL}/api/generate-pdf`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
