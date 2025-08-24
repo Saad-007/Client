@@ -2,7 +2,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { forwardRef } from 'react';
 
-const ResumePreview = forwardRef(({ resume, template = 'professional', templateStyles }, ref) => {
+const ResumePreview = forwardRef(({ resume, template = 'professional', templateStyles, forPDF = false }, ref) => {
   // Define default template styles if not provided
   const styles = templateStyles || {
     professional: {
@@ -44,19 +44,22 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
     '--accent-color': styles.accentColor,
   };
 
+  // For PDF, use fixed sizes instead of responsive classes
+  const getSizeClass = (mobile, desktop) => forPDF ? desktop : `${mobile} ${desktop}`;
+
   if (!resume) {
     return (
       <div 
-        className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6 rounded-xl md:rounded-2xl border border-gray-200 shadow-sm"
+        className={`bg-gradient-to-br from-gray-50 to-gray-100 ${getSizeClass('p-4', 'p-6')} ${getSizeClass('rounded-xl', 'rounded-2xl')} border border-gray-200 shadow-sm`}
         style={style}
       >
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-inner border border-gray-200 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className={`inline-flex items-center justify-center ${getSizeClass('w-10 h-10', 'w-12 h-12')} bg-white rounded-full shadow-inner border border-gray-200 mb-2`}>
+            <svg xmlns="http://www.w3.org/2000/svg" className={`${getSizeClass('h-4 w-4', 'h-5 w-5')} text-gray-400`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h3 className="text-sm md:text-base font-medium text-gray-700">Your professional resume</h3>
+          <h3 className={`${getSizeClass('text-sm', 'text-base')} font-medium text-gray-700`}>Your professional resume</h3>
           <p className="text-gray-500 text-xs max-w-md mx-auto">Your beautifully formatted resume will appear here once generated.</p>
         </div>
       </div>
@@ -68,7 +71,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
     const base = {
       h1: ({ node, ...props }) => (
         <h1 
-          className="text-xl md:text-2xl font-bold text-center mb-2"
+          className={`${getSizeClass('text-xl', 'text-2xl')} font-bold text-center mb-2`}
           style={{
             background: template === 'minimalist' 
               ? 'none' 
@@ -82,13 +85,13 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
       ),
       h2: ({ node, ...props }) => (
         <h2 
-          className="text-base md:text-lg font-semibold mt-4 md:mt-6 mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center" 
+          className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mt-4', 'mt-6')} ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`} 
           style={{ color: 'var(--text-color)' }}
           {...props}
         >
           {template !== 'minimalist' && (
             <span 
-              className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+              className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
               style={{ backgroundColor: 'var(--primary-color)' }}
             ></span>
           )}
@@ -97,7 +100,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
       ),
       h3: ({ node, ...props }) => (
         <h3 
-          className="text-sm md:text-base font-medium mt-3 md:mt-4 mb-1 md:mb-1.5 flex items-center" 
+          className={`${getSizeClass('text-sm', 'text-base')} font-medium ${getSizeClass('mt-3', 'mt-4')} ${getSizeClass('mb-1', 'mb-1.5')} flex items-center`} 
           style={{ color: 'var(--text-color)' }}
           {...props}
         >
@@ -110,22 +113,22 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
       ),
       p: ({ node, ...props }) => (
         <p 
-          className="my-2 md:my-3 leading-relaxed text-xs md:text-sm" 
+          className={`${getSizeClass('my-2', 'my-3')} leading-relaxed ${getSizeClass('text-xs', 'text-sm')}`} 
           style={{ color: 'var(--text-color)' }}
           {...props} 
         />
       ),
       ul: ({ node, ...props }) => (
-        <ul className="space-y-1 md:space-y-1.5 my-1 md:my-2" {...props} />
+        <ul className={`${getSizeClass('space-y-1', 'space-y-1.5')} ${getSizeClass('my-1', 'my-2')}`} {...props} />
       ),
       li: ({ node, ...props }) => (
         <li 
-          className="leading-snug flex items-start text-xs md:text-sm" 
+          className={`leading-snug flex items-start ${getSizeClass('text-xs', 'text-sm')}`} 
           style={{ color: 'var(--text-color)' }}
           {...props}
         >
           <span 
-            className="inline-flex items-center justify-center h-3 w-3 md:h-4 md:w-4 rounded-full mr-1.5 mt-0.5 text-xs flex-shrink-0"
+            className={`inline-flex items-center justify-center ${getSizeClass('h-3 w-3', 'h-4 w-4')} rounded-full mr-1.5 mt-0.5 text-xs flex-shrink-0`}
             style={{ 
               backgroundColor: 'var(--accent-color)',
               color: 'var(--primary-color)'
@@ -145,14 +148,14 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
       ),
       a: ({ node, ...props }) => (
         <a 
-          className="underline underline-offset-2 text-xs md:text-sm" 
+          className={`underline underline-offset-2 ${getSizeClass('text-xs', 'text-sm')}`} 
           style={{ color: 'var(--primary-color)' }}
           {...props} 
         />
       ),
       div: ({ node, className, ...props }) => (
         <div 
-          className={`${className} text-center mb-2 md:mb-3 text-xs`}
+          className={`${className} text-center ${getSizeClass('mb-2', 'mb-3')} text-xs`}
           style={{ color: 'var(--text-color)' }}
           {...props} 
         />
@@ -163,7 +166,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
     if (template === 'professional') {
       base.h1 = ({ node, ...props }) => (
         <h1 
-          className="text-xl md:text-2xl font-bold text-center mb-2 uppercase tracking-wider"
+          className={`${getSizeClass('text-xl', 'text-2xl')} font-bold text-center mb-2 uppercase tracking-wider`}
           style={{
             color: 'var(--primary-color)',
             letterSpacing: '0.1em'
@@ -176,7 +179,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
     if (template === 'creative') {
       base.h2 = ({ node, ...props }) => (
         <h2 
-          className="text-base md:text-lg font-semibold mt-4 md:mt-6 mb-2 md:mb-3 pb-1 flex items-center"
+          className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mt-4', 'mt-6')} ${getSizeClass('mb-2', 'mb-3')} pb-1 flex items-center`}
           style={{ 
             color: 'var(--primary-color)',
             borderBottom: '2px dashed var(--accent-color)'
@@ -184,7 +187,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
           {...props}
         >
           <span 
-            className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full mr-2"
+            className={`${getSizeClass('w-2.5 h-2.5', 'w-3 h-3')} rounded-full mr-2`}
             style={{ 
               backgroundColor: 'var(--primary-color)',
               opacity: 0.7
@@ -205,7 +208,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
     return (
       <div 
         ref={ref} 
-        className="p-4 md:p-6 rounded-xl md:rounded-2xl shadow-lg border border-gray-200"
+        className={`${getSizeClass('p-4', 'p-6')} ${getSizeClass('rounded-xl', 'rounded-2xl')} shadow-lg border border-gray-200`}
         style={{
           ...style,
           backgroundColor: 'var(--bg-color)'
@@ -284,10 +287,10 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
     return (
       <div 
         ref={ref} 
-        className="p-4 md:p-6 rounded-xl md:rounded-2xl shadow-lg border border-gray-200 print:p-6 print:rounded-none print:shadow-none"
+        className={`${getSizeClass('p-4', 'p-6')} ${getSizeClass('rounded-xl', 'rounded-2xl')} shadow-lg border border-gray-200 print:p-6 print:rounded-none print:shadow-none`}
         style={{
           ...style,
-          width: '100%',
+          width: forPDF ? '210mm' : '100%',
           maxWidth: '210mm', // A4 width for larger screens
           minHeight: 'auto',
           backgroundColor: 'var(--bg-color)'
@@ -295,10 +298,10 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
       >
         {/* Header */}
         {(name || contactInfo) && (
-          <header className="text-center mb-4 md:mb-6">
+          <header className={`text-center ${getSizeClass('mb-4', 'mb-6')}`}>
             {name && (
               <h1 
-                className="text-xl md:text-2xl font-bold mb-1.5"
+                className={`${getSizeClass('text-xl', 'text-2xl')} font-bold mb-1.5`}
                 style={{
                   color: 'var(--primary-color)',
                   background: 'none',
@@ -310,7 +313,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
               </h1>
             )}
             {contactInfo && (
-              <div className="flex flex-wrap justify-center gap-x-2 gap-y-1 text-xs">
+              <div className={`flex flex-wrap justify-center gap-x-2 gap-y-1 text-xs`}>
                 {contactInfo.split(/[,;]|\n/).map((info, i) => (
                   <span 
                     key={i} 
@@ -318,7 +321,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
                     style={{ color: 'var(--text-color)' }}
                   >
                     <svg 
-                      className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1" 
+                      className={`${getSizeClass('w-3 h-3', 'w-3.5 h-3.5')} mr-1`} 
                       fill="none" 
                       stroke="currentColor" 
                       viewBox="0 0 24 24"
@@ -336,17 +339,17 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Education */}
         {!!educationList.length && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Education</span>
             </h2>
-            <ul className="space-y-2 pl-3 md:pl-4">
+            <ul className={`space-y-2 ${getSizeClass('pl-3', 'pl-4')}`}>
               {educationList.map((edu, i) => {
                 let degreeAbbr = '';
                 let institution = '';
@@ -375,7 +378,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
                 return (
                   <li 
                     key={i} 
-                    className="pl-3 md:pl-4 border-l-2 py-1 text-xs md:text-sm"
+                    className={`${getSizeClass('pl-3', 'pl-4')} border-l-2 py-1 ${getSizeClass('text-xs', 'text-sm')}`}
                     style={{ 
                       color: 'var(--text-color)',
                       borderColor: 'var(--accent-color)'
@@ -384,7 +387,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start">
                       <div className="flex items-start">
                         <svg 
-                          className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1.5 mt-0.5 flex-shrink-0" 
+                          className={`${getSizeClass('w-3 h-3', 'w-3.5 h-3.5')} mr-1.5 mt-0.5 flex-shrink-0`} 
                           fill="none" 
                           stroke="currentColor" 
                           viewBox="0 0 24 24"
@@ -400,7 +403,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
                         </div>
                       </div>
                       {year && (
-                        <span className="text-xs md:mt-0 mt-1 md:ml-2" style={{ color: 'var(--text-color)' }}>{year}</span>
+                        <span className={`text-xs ${getSizeClass('mt-1 md:mt-0', 'md:mt-0')} ${getSizeClass('md:ml-2', 'md:ml-2')}`} style={{ color: 'var(--text-color)' }}>{year}</span>
                       )}
                     </div>
                   </li>
@@ -412,18 +415,18 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Summary */}
         {summary && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Professional Summary</span>
             </h2>
             <p 
-              className="leading-relaxed pl-3 md:pl-4 text-xs md:text-sm"
+              className={`leading-relaxed ${getSizeClass('pl-3', 'pl-4')} ${getSizeClass('text-xs', 'text-sm')}`}
               style={{ color: 'var(--text-color)' }}
             >
               {summary}
@@ -433,21 +436,21 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Skills */}
         {skillsArray.length > 0 && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Technical Skills</span>
             </h2>
-            <div className="flex flex-wrap gap-1 md:gap-1.5 pl-3 md:pl-4">
+            <div className={`flex flex-wrap ${getSizeClass('gap-1', 'gap-1.5')} ${getSizeClass('pl-3', 'pl-4')}`}>
               {skillsArray.map((skill, i) => (
                 <span 
                   key={i} 
-                  className="inline-flex items-center px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full text-xs font-medium"
+                  className={`inline-flex items-center ${getSizeClass('px-1.5 py-0.5', 'px-2 py-0.5')} rounded-full text-xs font-medium`}
                   style={{ 
                     backgroundColor: 'var(--accent-color)',
                     color: 'var(--primary-color)'
@@ -462,40 +465,40 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Experience */}
         {experienceBlocks.length > 0 && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Professional Experience</span>
             </h2>
-            <div className="space-y-3 md:space-y-4 pl-3 md:pl-4">
+            <div className={`${getSizeClass('space-y-3', 'space-y-4')} ${getSizeClass('pl-3', 'pl-4')}`}>
               {experienceBlocks.map((exp, idx) => (
                 <div 
                   key={idx} 
-                  className="relative pl-4 md:pl-5"
+                  className={`relative ${getSizeClass('pl-4', 'pl-5')}`}
                   style={{ color: 'var(--text-color)' }}
                 >
                   {template !== 'minimalist' && (
                     <div 
-                      className="absolute left-0 top-1 md:top-1.5 w-2 h-2 md:w-2.5 md:h-2.5 rounded-full opacity-80"
+                      className={`absolute left-0 ${getSizeClass('top-1', 'top-1.5')} ${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full opacity-80`}
                       style={{ backgroundColor: 'var(--primary-color)' }}
                     ></div>
                   )}
                   {exp.title && (
-                    <h3 className="text-sm md:text-base font-medium mb-1">
+                    <h3 className={`${getSizeClass('text-sm', 'text-base')} font-medium mb-1`}>
                       {exp.title}
                     </h3>
                   )}
                   {exp.bullets?.length > 0 && (
-                    <ul className="space-y-1 md:space-y-1.5">
+                    <ul className={getSizeClass('space-y-1', 'space-y-1.5')}>
                       {exp.bullets.map((point, i) => (
-                        <li key={i} className="flex text-xs md:text-sm">
+                        <li key={i} className={`flex ${getSizeClass('text-xs', 'text-sm')}`}>
                           <span 
-                            className="inline-flex items-center justify-center h-3 w-3 md:h-4 md:w-4 rounded-full mr-1.5 mt-0.5 text-xs flex-shrink-0"
+                            className={`inline-flex items-center justify-center ${getSizeClass('h-3 w-3', 'h-4 w-4')} rounded-full mr-1.5 mt-0.5 text-xs flex-shrink-0`}
                             style={{ 
                               backgroundColor: 'var(--accent-color)',
                               color: 'var(--primary-color)'
@@ -516,26 +519,26 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Projects */}
         {projectsList.length > 0 && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Key Projects</span>
             </h2>
-            <ul className="grid grid-cols-1 gap-2 md:gap-3 pl-3 md:pl-4">
+            <ul className={`grid grid-cols-1 ${getSizeClass('gap-2', 'gap-3')} ${getSizeClass('pl-3', 'pl-4')}`}>
               {projectsList.map((proj, i) => (
                 <li 
                   key={i} 
-                  className="rounded p-2 md:p-3 border border-gray-200 text-xs md:text-sm"
+                  className={`rounded ${getSizeClass('p-2', 'p-3')} border border-gray-200 ${getSizeClass('text-xs', 'text-sm')}`}
                   style={{ backgroundColor: 'var(--accent-color)' }}
                 >
                   <div className="flex items-start">
                     <svg 
-                      className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1.5 mt-0.5 flex-shrink-0" 
+                      className={`${getSizeClass('w-3 h-3', 'w-3.5 h-3.5')} mr-1.5 mt-0.5 flex-shrink-0`} 
                       fill="none" 
                       stroke="currentColor" 
                       viewBox="0 0 24 24"
@@ -553,25 +556,25 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Certifications */}
         {certificationsArray.length > 0 && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Certifications</span>
             </h2>
-            <ul className="space-y-1 md:space-y-2 pl-3 md:pl-4">
+            <ul className={`${getSizeClass('space-y-1', 'space-y-2')} ${getSizeClass('pl-3', 'pl-4')}`}>
               {certificationsArray.map((cert, i) => (
                 <li 
                   key={i} 
-                  className="flex items-start text-xs md:text-sm"
+                  className={`flex items-start ${getSizeClass('text-xs', 'text-sm')}`}
                   style={{ color: 'var(--text-color)' }}
                 >
                   <svg 
-                    className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1.5 mt-0.5 flex-shrink-0" 
+                    className={`${getSizeClass('w-3 h-3', 'w-3.5 h-3.5')} mr-1.5 mt-0.5 flex-shrink-0`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -588,28 +591,28 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Languages */}
         {languagesArray.length > 0 && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Languages</span>
             </h2>
-            <div className="flex flex-wrap gap-1 md:gap-1.5 pl-3 md:pl-4">
+            <div className={`flex flex-wrap ${getSizeClass('gap-1', 'gap-1.5')} ${getSizeClass('pl-3', 'pl-4')}`}>
               {languagesArray.map((lang, i) => (
                 <span 
                   key={i} 
-                  className="inline-flex items-center px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full text-xs font-medium"
+                  className={`inline-flex items-center ${getSizeClass('px-1.5 py-0.5', 'px-2 py-0.5')} rounded-full text-xs font-medium`}
                   style={{ 
                     backgroundColor: 'var(--accent-color)',
                     color: 'var(--text-color)'
                   }}
                 >
                   <svg 
-                    className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1" 
+                    className={`${getSizeClass('w-3 h-3', 'w-3.5 h-3.5')} mr-1`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -626,28 +629,28 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
         {/* Tools */}
         {toolsArray.length > 0 && (
-          <section className="mb-4 md:mb-6">
-            <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-3 pb-1 border-b border-gray-200 flex items-center">
+          <section className={getSizeClass('mb-4', 'mb-6')}>
+            <h2 className={`${getSizeClass('text-base', 'text-lg')} font-semibold ${getSizeClass('mb-2', 'mb-3')} pb-1 border-b border-gray-200 flex items-center`}>
               {template !== 'minimalist' && (
                 <span 
-                  className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full mr-2"
+                  className={`${getSizeClass('w-2 h-2', 'w-2.5 h-2.5')} rounded-full mr-2`}
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 ></span>
               )}
               <span style={{ color: 'var(--text-color)' }}>Tools</span>
             </h2>
-            <div className="flex flex-wrap gap-1 md:gap-1.5 pl-3 md:pl-4">
+            <div className={`flex flex-wrap ${getSizeClass('gap-1', 'gap-1.5')} ${getSizeClass('pl-3', 'pl-4')}`}>
               {toolsArray.map((lang, i) => (
                 <span 
                   key={i} 
-                  className="inline-flex items-center px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full text-xs font-medium"
+                  className={`inline-flex items-center ${getSizeClass('px-1.5 py-0.5', 'px-2 py-0.5')} rounded-full text-xs font-medium`}
                   style={{ 
                     backgroundColor: 'var(--accent-color)',
                     color: 'var(--text-color)'
                   }}
                 >
                   <svg 
-                    className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1" 
+                    className={`${getSizeClass('w-3 h-3', 'w-3.5 h-3.5')} mr-1`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -667,7 +670,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
 
   return (
     <div 
-      className="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl shadow-lg border border-gray-200 text-center"
+      className={`bg-white ${getSizeClass('p-4', 'p-6')} ${getSizeClass('rounded-xl', 'rounded-2xl')} shadow-lg border border-gray-200 text-center`}
       style={style}
     >
       <div className="text-red-500 mb-2 text-xs md:text-sm">Unable to display resume</div>
