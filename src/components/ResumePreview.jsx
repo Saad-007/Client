@@ -45,7 +45,7 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
   };
 
   // For PDF, use fixed sizes instead of responsive classes
-  const getSizeClass = (mobile, desktop) => forPDF ? desktop : `${mobile} ${desktop}`;
+  const getSizeClass = (mobile, desktop) => forPDF ? desktop : mobile;
 
   if (!resume) {
     return (
@@ -211,7 +211,10 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
         className={`${getSizeClass('p-4', 'p-6')} ${getSizeClass('rounded-xl', 'rounded-2xl')} shadow-lg border border-gray-200`}
         style={{
           ...style,
-          backgroundColor: 'var(--bg-color)'
+          backgroundColor: 'var(--bg-color)',
+          width: forPDF ? '210mm' : '100%',
+          maxWidth: forPDF ? '210mm' : '100%',
+          minHeight: forPDF ? '297mm' : 'auto'
         }}
       >
         <div className="prose max-w-none prose-sm">
@@ -291,8 +294,8 @@ const ResumePreview = forwardRef(({ resume, template = 'professional', templateS
         style={{
           ...style,
           width: forPDF ? '210mm' : '100%',
-          maxWidth: '210mm', // A4 width for larger screens
-          minHeight: 'auto',
+          maxWidth: forPDF ? '210mm' : '100%',
+          minHeight: forPDF ? '297mm' : 'auto',
           backgroundColor: 'var(--bg-color)'
         }}
       >
