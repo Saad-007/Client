@@ -216,7 +216,7 @@ const Home = () => {
       
       console.log("Sending resume data for DOC:", resume);
       
-      const response = await fetch("http://localhost:5000/api/generate-doc", {
+      const response = await fetch(`${API_BASE_URL}/api/generate-doc`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
