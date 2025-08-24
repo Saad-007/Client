@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FiEdit3, FiLoader, FiCheckCircle, FiInfo } from 'react-icons/fi';
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const SinglePromptResumeForm = ({ onGenerate }) => {
   const [prompt, setPrompt] = useState('');
   const [error, setError] = useState('');
@@ -25,7 +25,7 @@ const SinglePromptResumeForm = ({ onGenerate }) => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/resume/generate", {
+      const res = await fetch(`${API_BASE_URL}/api/resume/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt })

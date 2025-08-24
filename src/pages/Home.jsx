@@ -128,7 +128,7 @@ const Home = () => {
       // Check if content is short enough for one page
       const isOnePageContent = estimateContentLength(resume);
       
-      const response = await fetch("${API_BASE_URL}/api/generate-pdf", {
+      const response = await fetch(`${API_BASE_URL}/api/generate-pdf`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
