@@ -3,6 +3,7 @@ import SinglePromptResumeForm from "../components/StepForm";
 import ResumePreview from "../components/ResumePreview";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiFileText, FiCheck, FiAward, FiBriefcase, FiBook, FiCode, FiGlobe, FiChevronDown } from "react-icons/fi";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Template configurations
 const TEMPLATES = {
@@ -127,7 +128,7 @@ const Home = () => {
       // Check if content is short enough for one page
       const isOnePageContent = estimateContentLength(resume);
       
-      const response = await fetch("http://localhost:5000/api/generate-pdf", {
+      const response = await fetch("${API_BASE_URL}/api/generate-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
