@@ -1,6 +1,6 @@
 // ResumeAnalysisPage.jsx
 import { useState, useEffect } from 'react';
-import { FiUpload, FiBarChart2, FiCheck, FiX, FiEdit2, FiDownload, FiChevronRight } from "react-icons/fi";
+import { FiUpload,FiChevronDown ,FiChevronUp,FiBarChart2, FiCheck, FiX, FiEdit2, FiDownload, FiChevronRight } from "react-icons/fi";
 import { motion } from "framer-motion";
 import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -30,7 +30,26 @@ const ResumeAnalysisPage = () => {
   const [error, setError] = useState(null);
 const [analysis, setAnalysis] = useState(defaultAnalysisData);
   const [jobDescription, setJobDescription] = useState('');
+ const [activeIndex, setActiveIndex] = useState(null);
 
+  const toggleFAQ = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const faqData = [
+    {
+      question: "How does the AI analyze my resume?",
+      answer: "Our system evaluates your resume against 20+ factors including ATS compatibility, content structure, keyword optimization, and design principles used by professional resume writers."
+    },
+    {
+      question: "Is my resume data secure?",
+      answer: "Yes, we don't store your resume after analysis is complete unless you choose to save it to your account. All data is encrypted during processing."
+    },
+    {
+      question: "How accurate is the analysis?",
+      answer: "Our AI is trained on thousands of successful resumes and constantly updated with hiring trends. While not perfect, it identifies 95% of common resume issues."
+    }
+  ];
 
 const getResumeFeedback = async (resumeText) => {
   const res = await fetch("http://localhost:5000/api/resume/feedback", {
@@ -730,76 +749,41 @@ const downloadReport = async () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-stone-900 mb-8 text-center">Frequently Asked Questions</h3>
-          
-          <div className="space-y-4">
-            {[
-              {
-                question: "How does the AI analyze my resume?",
-                answer: "Our system evaluates your resume against 20+ factors including ATS compatibility, content structure, keyword optimization, and design principles used by professional resume writers."
-              },
-              {
-                question: "Is my resume data secure?",
-                answer: "Yes, we don't store your resume after analysis is complete unless you choose to save it to your account. All data is encrypted during processing."
-              },
-              {
-                question: "How accurate is the analysis?",
-                answer: "Our AI is trained on thousands of successful resumes and constantly updated with hiring trends. While not perfect, it identifies 95% of common resume issues."
-              }
-            ].map((item, index) => (
-              <div key={index} className="border border-stone-200 rounded-xl overflow-hidden">
-                <button className="w-full flex justify-between items-center p-6 text-left hover:bg-stone-50 transition-colors">
-                  <span className="font-medium text-stone-800">{item.question}</span>
-                  <FiChevronRight className="text-stone-500 transform transition-transform" />
-                </button>
+           <section className="max-w-4xl mx-auto py-12 px-4">
+      <h3 className="text-2xl font-bold text-stone-900 mb-8 text-center">Frequently Asked Questions</h3>
+      
+      <div className="space-y-4">
+        {faqData.map((item, index) => (
+          <div key={index} className="border border-stone-200 rounded-xl overflow-hidden transition-all duration-300">
+            <button 
+              className="w-full flex justify-between items-center p-6 text-left hover:bg-stone-50 transition-colors"
+              onClick={() => toggleFAQ(index)}
+              aria-expanded={activeIndex === index}
+            >
+              <span className="font-medium text-stone-800">{item.question}</span>
+              {activeIndex === index ? (
+                <FiChevronUp className="text-stone-500 transition-transform" />
+              ) : (
+                <FiChevronDown className="text-stone-500 transition-transform" />
+              )}
+            </button>
+            
+            <div 
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                activeIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+              }`}
+            >
+              <div className="p-6 pt-0 text-stone-600">
+                {item.answer}
               </div>
-            ))}
+            </div>
           </div>
-        </section>
+        ))}
+      </div>
+    </section>
       </main>
 
-      {/* ===== Footer ===== */}
-      <footer className="bg-stone-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div>
-              <h4 className="text-xl font-bold mb-6">Resume<span className="text-amber-400">AI</span></h4>
-              <p className="text-stone-400">The most advanced AI-powered resume builder and analyzer for modern professionals.</p>
-            </div>
-            <div>
-              <h5 className="font-medium mb-4">Product</h5>
-              <ul className="space-y-3 text-stone-400">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Analysis</a></li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-medium mb-4">Resources</h5>
-              <ul className="space-y-3 text-stone-400">
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Career Guides</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Webinars</a></li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-medium mb-4">Company</h5>
-              <ul className="space-y-3 text-stone-400">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-stone-800 mt-12 pt-8 text-center text-stone-500">
-            <p>© {new Date().getFullYear()} ResumeAI. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };

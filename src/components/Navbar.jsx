@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiBriefcase, FiDownload, FiUser, FiHome, FiMenu, FiX } from "react-icons/fi";
+import { FiBriefcase, FiDownload, FiUser, FiHome, FiMenu, FiX, FiLogIn } from "react-icons/fi";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -11,9 +11,9 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { to: "/Home", icon: <FiHome className="text-lg" />, text: "Home" },
+    { to: "/", icon: <FiHome className="text-lg" />, text: "Home" },
     { to: "/resume", icon: <FiUser className="text-lg" />, text: "Resume Builder" },
-    { to: "/", icon: <FiBriefcase className="text-lg" />, text: "Resume Analysis" },
+    { to: "/Analyze", icon: <FiBriefcase className="text-lg" />, text: "Resume Analysis" },
   ];
 
   return (
@@ -41,15 +41,15 @@ const Navbar = () => {
             ))}
           </div>
           
-          {/* Export Button (Desktop) */}
+          {/* Sign In Button (Desktop) */}
           <div className="hidden md:flex md:items-center">
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-stone-700 to-stone-800 text-amber-50 px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 hover:shadow-lg transition-all duration-200 hover:from-stone-800 hover:to-stone-900 border border-stone-600"
             >
-              <FiDownload className="text-lg" />
-              Export Resume
+              <FiLogIn className="text-lg" />
+              Sign In
             </motion.button>
           </div>
 
@@ -97,8 +97,8 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
                 className="w-full mt-4 bg-gradient-to-r from-stone-700 to-stone-800 text-amber-50 px-4 py-2 rounded-md text-base font-medium flex items-center justify-center gap-2 border border-stone-600"
               >
-                <FiDownload className="text-lg" />
-                Export Resume
+                <FiLogIn className="text-lg" />
+                Sign In
               </motion.button>
             </div>
           </motion.div>

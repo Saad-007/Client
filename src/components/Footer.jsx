@@ -1,4 +1,5 @@
 import { FiGithub, FiTwitter, FiLinkedin, FiMail } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -34,10 +35,18 @@ const Footer = () => {
               Resources
             </h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Blog</a></li>
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Templates</a></li>
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Examples</a></li>
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Help Center</a></li>
+              <li>
+                <Link 
+                  to="/Home#templates" 
+                  className="text-stone-600 hover:text-amber-700 transition-colors"
+                >
+                  Templates
+                </Link>
+              </li>
+              <li>
+                <Link to="/Helpcenter" className="text-stone-600 hover:text-amber-700 transition-colors">Help Center
+                </Link>
+              </li>
             </ul>
           </div>
           
@@ -46,9 +55,9 @@ const Footer = () => {
               Legal
             </h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Privacy</a></li>
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Terms</a></li>
-              <li><a href="#" className="text-stone-600 hover:text-amber-700 transition-colors">Cookie Policy</a></li>
+              <li><Link to='/Privacy' className="text-stone-600 hover:text-amber-700 transition-colors">Privacy</Link></li>
+              <li><Link to='/Terms' className="text-stone-600 hover:text-amber-700 transition-colors">Term</Link></li>
+              <li><Link to='/Cookie' className="text-stone-600 hover:text-amber-700 transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -57,6 +66,14 @@ const Footer = () => {
           <p className="text-stone-500 text-sm">
             © {new Date().getFullYear()} ResumeAI. All rights reserved.
           </p>
+          
+          {/* Added your name/credit section */}
+          <div className="mt-2 md:mt-0">
+            <p className="text-stone-500 text-sm">
+              Created by <span className="font-medium text-amber-700">SAAD</span>
+            </p>
+          </div>
+          
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-stone-500 hover:text-stone-700 text-sm">Privacy Policy</a>
             <a href="#" className="text-stone-500 hover:text-stone-700 text-sm">Terms of Service</a>

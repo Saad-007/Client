@@ -1,7 +1,79 @@
 import { useState, useEffect } from "react";
-import { FiAward, FiBriefcase, FiDownload, FiMessageSquare, FiCheck, FiArrowRight, FiMenu, FiX } from "react-icons/fi";
+import { FiAward,FiBook ,FiCode ,FiGlobe,  FiBriefcase, FiDownload, FiMessageSquare, FiCheck, FiArrowRight, FiMenu, FiX } from "react-icons/fi";
 import { motion, useScroll, useTransform } from "framer-motion";
-
+import { Link } from "react-router-dom";
+const TEMPLATES = {
+  professional: {
+    name: "Professional",
+    description: "Clean corporate layout for formal job applications",
+    icon: <FiBriefcase className="text-xl" />,
+    previewColor: "from-stone-600 to-stone-800",
+    styles: {
+      primaryColor: "#57534e",
+      secondaryColor: "#44403c",
+      backgroundColor: "#ffffff",
+      textColor: "#374151",
+      accentColor: "#f5f5f4",
+      headerStyle: "gradient",
+    },
+  },
+  modern: {
+    name: "Modern",
+    description: "Contemporary design with creative elements",
+    icon: <FiAward className="text-xl" />,
+    previewColor: "from-amber-600 to-amber-800",
+    styles: {
+      primaryColor: "#d97706",
+      secondaryColor: "#b45309",
+      backgroundColor: "#fffbeb",
+      textColor: "#1f2937",
+      accentColor: "#fef3c7",
+      headerStyle: "solid",
+    },
+  },
+  minimalist: {
+    name: "Minimalist",
+    description: "Simple and clean layout with focus on content",
+    icon: <FiBook className="text-xl" />,
+    previewColor: "from-gray-600 to-gray-800",
+    styles: {
+      primaryColor: "#000000",
+      secondaryColor: "#4b5563",
+      backgroundColor: "#ffffff",
+      textColor: "#111827",
+      accentColor: "#f3f4f6",
+      headerStyle: "minimal",
+    },
+  },
+  creative: {
+    name: "Creative",
+    description: "Colorful design for creative industries",
+    icon: <FiCode className="text-xl" />,
+    previewColor: "from-orange-700 to-orange-900",
+    styles: {
+      primaryColor: "#78350f",
+      secondaryColor: "#5a3807",
+      backgroundColor: "#fef7ed",
+      textColor: "#4b5563",
+      accentColor: "#fed7aa",
+      headerStyle: "creative",
+    },
+  },
+  international: {
+    name: "International",
+    description: "Designed for global job applications",
+    icon: <FiGlobe className="text-xl" />,
+    previewColor: "from-stone-700 to-stone-900",
+    styles: {
+      primaryColor: "#44403c",
+      secondaryColor: "#292524",
+      backgroundColor: "#fafaf9",
+      textColor: "#064e3b",
+      accentColor: "#e7e5e4",
+      headerStyle: "gradient",
+    },
+  },
+};
 const HomePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -21,26 +93,7 @@ const HomePage = () => {
     <div className="bg-stone-50 antialiased">
       {/* Mobile Navigation */}
       <nav className="md:hidden bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-stone-800">Resume<span className="text-amber-600">AI</span></h1>
-            </div>
-            
-            <div className="flex items-center">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-amber-700 focus:outline-none"
-              >
-                {isMobileMenuOpen ? (
-                  <FiX className="block h-6 w-6" />
-                ) : (
-                  <FiMenu className="block h-6 w-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+      
         
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
@@ -93,6 +146,7 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
           >
+           <Link to='/resume'>
             <motion.button
               whileHover={{ 
                 scale: 1.02,
@@ -107,7 +161,9 @@ const HomePage = () => {
               </span>
               <span className="absolute inset-0 bg-gradient-to-r from-stone-800 to-amber-800 opacity-0 group-hover:opacity-100 transition-opacity"></span>
             </motion.button>
-          </motion.div>
+            </Link>
+           </motion.div> 
+          
           
           <motion.div 
             initial={{ opacity: 0 }}
@@ -196,43 +252,59 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ===== Template Showcase ===== */}
-      <section id="templates" className="py-20 md:py-32 bg-stone-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4 md:mb-6">Signature Templates</h2>
-            <p className="text-base md:text-lg text-stone-600 max-w-2xl mx-auto">
-              Minimalist designs that emphasize your unique value
+  {/* ===== Template Showcase ===== */}
+{/* ===== Template Showcase ===== */}
+<section id="templates" className="py-20 md:py-32 bg-stone-100">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="text-center mb-12 md:mb-20">
+      <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4 md:mb-6">
+        Signature Templates
+      </h2>
+      <p className="text-base md:text-lg text-stone-600 max-w-2xl mx-auto">
+        Minimalist designs that emphasize your unique value
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      {Object.values(TEMPLATES).map((template, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: index * 0.1 }}
+          viewport={{ once: true }}
+          whileHover={{
+            y: -10,
+            transition: { duration: 0.3 },
+          }}
+          className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white shadow-sm border border-stone-200"
+        >
+          {/* Preview Block */}
+          <div
+            className={`h-60 md:h-80 bg-gradient-to-br ${template.previewColor} flex flex-col items-center justify-center text-white`}
+          >
+            <div className="mb-3">{template.icon}</div>
+            <span className="text-2xl md:text-3xl font-semibold">
+              {template.name}
+            </span>
+            <p className="text-sm md:text-base mt-2 opacity-80 max-w-xs text-center">
+              {template.description}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {["Executive", "Modernist", "Classic"].map((template, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, scale: 0.96 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ 
-                  y: -10,
-                  transition: { duration: 0.3 }
-                }}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white shadow-sm border border-stone-200"
-              >
-                <div className="h-60 md:h-80 bg-gradient-to-br from-stone-200 to-stone-100 flex items-center justify-center">
-                  <span className="text-3xl md:text-4xl font-light text-stone-400">{template}</span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 md:p-6">
-                  <button className="translate-y-4 group-hover:translate-y-0 transition-transform bg-white text-stone-900 px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-sm md:text-base">
-                    Preview Template
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+          {/* Hover Overlay */}
+
+          {/* <div className="absolute inset-0 bg-gradient-to-t from-stone-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 md:p-6">
+            <button className="translate-y-4 group-hover:translate-y-0 transition-transform bg-white text-stone-900 px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-sm md:text-base">
+              Preview Template
+            </button>
+          </div> */}
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* ===== Testimonial ===== */}
       <section id="testimonials" className="max-w-7xl mx-auto py-20 md:py-32 px-4 sm:px-6">
