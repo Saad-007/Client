@@ -1,6 +1,6 @@
 // ResumeAnalysisPage.jsx
 import { useState, useEffect } from 'react';
-import { FiUpload,FiChevronDown ,FiChevronUp,FiBarChart2, FiCheck, FiX, FiEdit2, FiDownload, FiChevronRight } from "react-icons/fi";
+import {FiExternalLink, FiHeart, FiMapPin, FiBriefcase, FiStar, FiShare2 ,FiUpload, FiChevronDown, FiChevronUp, FiBarChart2, FiCheck, FiX, FiEdit2, FiDownload, FiChevronRight, FiDollarSign, FiClock } from "react-icons/fi";
 import { motion } from "framer-motion";
 import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -28,7 +28,8 @@ const ResumeAnalysisPage = () => {
   const [analysis, setAnalysis] = useState(defaultAnalysisData);
   const [jobDescription, setJobDescription] = useState('');
   const [activeIndex, setActiveIndex] = useState(null);
-
+  const [activeTab, setActiveTab] = useState('suggestions'); // 'suggestions' or 'jobs'
+  const [data, setData] = useState(null);
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
@@ -96,53 +97,62 @@ const ResumeAnalysisPage = () => {
   };
 
   // Updated analyzeResume function with proper error handling and endpoint
-  const analyzeResume = async () => {
-    console.log('Analyze button clicked');
-    if (!file) {
-      setError('Please select a file first');
-      return;
+const analyzeResume = async () => {
+  console.log('Analyze button clicked');
+  if (!file) {
+    setError('Please select a file first');
+    return;
+  }
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const formData = new FormData();
+    formData.append('resume', file);
+    
+    const response = await axios.post(`${API_BASE_URL}/api/resume/feedback`, formData);
+
+    if (!response.data?.data) {
+      throw new Error('Invalid response structure');
     }
 
-    setIsLoading(true);
-    setError(null);
+    const backendData = response.data.data;
 
-    try {
-      const formData = new FormData();
-      formData.append('resume', file);
-      
-      const response = await axios.post(`${API_BASE_URL}/api/resume/feedback`, formData);
+    const analysisResult = {
+      overallScore: backendData.overallScore || 0,
+      categories: backendData.categories || [{
+        name: "General Assessment",
+        score: backendData.overallScore || 0,
+        feedback: "See suggestions below"
+      }],
+      suggestions: backendData.suggestions || [],
+      jobTitleMatch: backendData.jobTitleMatch || null,
+      keywordMatches: backendData.keywordMatches || []
+    };
 
-      // Ensure response has required fields
-      if (!response.data?.data) {
-        throw new Error('Invalid response structure');
-      }
+    setAnalysis(analysisResult);
 
-      const backendData = response.data.data;
-
-      // Transform backend data to match your frontend state
-      const analysisResult = {
-        overallScore: backendData.overallScore || 0,
-        categories: backendData.categories || [{
-          name: "General Assessment",
-          score: backendData.overallScore || 0,
-          feedback: "See suggestions below"
-        }],
-        suggestions: backendData.suggestions || [],
-        jobTitleMatch: backendData.jobTitleMatch || null,
-        keywordMatches: backendData.keywordMatches || []
-      };
-
-      setAnalysis(analysisResult);
-    } catch (err) {
-      console.error('Analysis error:', err);
-      const errorMessage = err.response?.data?.error || 
-                          err.message || 
-                          'Failed to analyze resume. Please try again.';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+    // ✅ Agar jobs bhi aa rahi hain backend se
+    if (backendData.jobs) {
+      setData({ jobs: backendData.jobs });
+    } else {
+      // ✅ Agar jobs alag API se fetch karni hain
+      const jobsRes = await axios.get(`${API_BASE_URL}/api/jobs?search=${analysisResult.jobTitleMatch || "developer"}`);
+      setData({ jobs: jobsRes.data.jobs || [] });
     }
-  };
+
+  } catch (err) {
+    console.error('Analysis error:', err);
+    const errorMessage = err.response?.data?.error || 
+                        err.message || 
+                        'Failed to analyze resume. Please try again.';
+    setError(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const downloadReport = async () => {
     try {
@@ -732,7 +742,100 @@ const ResumeAnalysisPage = () => {
             </div>
           </section>
         )}
+ {/* Matching jobs */}
+    {data?.jobs && data.jobs.length > 0 && (
+  <section className="mb-12 md:mb-16">
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center">
+        <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center mr-3">
+          <FiBriefcase className="text-amber-600" size={16} />
+        </div>
+        <h2 className="text-xl font-bold text-stone-900">
+          Matching Jobs
+          <span className="ml-2 text-amber-600 text-sm font-medium bg-amber-50 px-2 py-1 rounded-full">
+            {data.jobs.length} found
+          </span>
+        </h2>
+      </div>
+    </div>
 
+    <div className="grid grid-cols-1 gap-3">
+      {data.jobs.map((job, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.05 }}
+          className="bg-white rounded-lg border border-stone-200 p-4 hover:shadow-sm transition-all group"
+        >
+          <div className="flex justify-between items-start">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-stone-900 text-lg mb-1 truncate group-hover:text-amber-600 transition-colors">
+                {job.title}
+              </h3>
+              
+              <div className="flex items-center text-stone-600 text-sm mb-2">
+                <FiBriefcase size={12} className="mr-1" />
+                <span className="truncate mr-3">{job.company || "Tech Company"}</span>
+                
+                <FiMapPin size={12} className="mr-1" />
+                <span className="truncate">{job.location || "Remote"}</span>
+              </div>
+              
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="inline-flex items-center px-2 py-1 bg-stone-100 text-stone-700 rounded-full text-xs">
+                  <FiClock size={10} className="mr-1" />
+                  {job.type || "Full-time"}
+                </span>
+                
+                {job.salary && (
+                  <span className="inline-flex items-center px-2 py-1 bg-amber-50 text-amber-700 rounded-full text-xs">
+                    <FiDollarSign size={10} className="mr-1" />
+                    {job.salary}
+                  </span>
+                )}
+                
+                {job.matchScore && (
+                  <span className="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs">
+                    <FiStar size={10} className="mr-1" />
+                    {job.matchScore}% match
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-end ml-3">
+              <button className="text-stone-400 hover:text-amber-500 transition-colors mb-2">
+                <FiHeart size={16} />
+              </button>
+              
+              <a
+                href={job.url || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-sm bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md transition-colors"
+              >
+                Apply
+                <FiExternalLink size={12} className="ml-1" />
+              </a>
+              
+              <p className="text-xs text-stone-500 mt-1">
+                {job.platform || "Direct"}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+    
+    <div className="text-center mt-6">
+      <button className="inline-flex items-center text-sm text-amber-600 hover:text-amber-700 font-medium">
+        View all matching jobs
+        <FiExternalLink size={14} className="ml-1" />
+      </button>
+    </div>
+  </section>
+)}
         {/* Upgrade CTA */}
         <section className="bg-gradient-to-r from-stone-900 to-stone-800 rounded-xl md:rounded-3xl p-6 md:p-12 text-center text-white mb-16 md:mb-24">
           <h3 className="text-xl md:text-3xl font-bold mb-4 md:mb-6">Get Personalized Resume Coaching</h3>
@@ -772,12 +875,18 @@ const ResumeAnalysisPage = () => {
                   <div className="p-4 md:p-6 pt-0 text-stone-600 text-sm md:text-base">
                     {item.answer}
                   </div>
+                  
                 </div>
+                
               </div>
+              
             ))}
+            
           </div>
         </section>
+        
       </main>
+
     </div>
   );
 };
